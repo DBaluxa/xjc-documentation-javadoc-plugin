@@ -1,26 +1,23 @@
 [![Autobuild Status](https://travis-ci.org/Hubbitus/xjc-documentation-annotation-plugin.svg?branch=master)](https://travis-ci.org/Hubbitus/xjc-documentation-annotation-plugin)
 
-XJC plugin to bring XSD descriptions into annotations of generated classes
+XJC plugin to bring XSD descriptions into JavaDoc of generated classes
 ==========================================================================
-
-[Habr article](https://habr.com/en/post/437914/) (in Russian) describing for what it and how to use.
-
 
 Why that plugin born you may find at the end of readme, but now lets look what it does and how to use it!
 
-## What it does: \<annotation>\<documentation> -> Java class annotations
+## What it does: \<annotation>\<documentation> -> Java class JavaDoc
 
 Said we have this object described in XSD:
 
 ```xml
   <xs:complexType name="Customer">
     <xs:annotation>
-      <xs:documentation>Пользователь</xs:documentation>
+      <xs:documentation>Customer basic data</xs:documentation>
       </xs:annotation>
     <xs:sequence>
       <xs:element name="name" type="xs:string">
         <xs:annotation>
-          <xs:documentation>Фамилия и имя</xs:documentation>
+          <xs:documentation>Name of the customer</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
@@ -40,17 +37,21 @@ public class Customer {
 }
 ```
 
-**But in my case I want known how to class and fields was named in source file!**
+**But in my case I want known how to class and fields was documented in source file!**
 So it what this plugin do!
 
 So you get:
 
 ```java
-@XsdInfo(name = "Пользователь", xsdElementPart = "<complexType name=\"Customer\">\n  <complexContent>\n    <restriction base=\"{http://www.w3.org/2001/XMLSchema}anyType\">\n      <sequence>\n        <element name=\"name\" type=\"{http://www.w3.org/2001/XMLSchema}string\"/>\n      </sequence>\n    </restriction>\n  </complexContent>\n</complexType>")
+/**
+* Customer basic data
+*/
 public class Customer {
 
+    /**
+     ** Name of the customer
+    */
     @XmlElement(required = true)
-    @XsdInfo(name = "Фамилия и имя")
     protected String name;
 }
 ```
@@ -60,22 +61,22 @@ public class Customer {
 ### Manual call in commandline
 If you want run it manually ensure jar class with plugin in run classpath and just add option `-XPluginDescriptionAnnotation`. F.e.:
 
-    xjc -npa -no-header -d src/main/generated-java/ -p xsd.generated -XPluginDescriptionAnnotation scheme.xsd
+    xjc -npa -no-header -d src/main/generated-java/ -p xsd.generated -XPluginDescriptionJavadoc scheme.xsd
 
 ### Call from Java/Groovy
 ```groovy
   Driver.run(
     [
-       '-XPluginDescriptionAnnotation'
+       '-XPluginDescriptionJavadoc'
         ,'-d', generatedClassesDir.absolutePath
-        ,'-p', 'info.hubbitus.generated.test'
+        ,'-p', 'info.dbaluxa.generated.test'
         ,'Example.xsd'
     ] as String[]
     ,new XJCListener() {...}
   )
 ```
 
-See test [XJCPluginDescriptionAnnotationTest](src/test/groovy/info/hubbitus/XJCPluginDescriptionAnnotationTest.groovy) for example.
+See test [XJCPluginDescriptionJavadocTest](src/test/groovy/info/hubbitus/XJCPluginDescriptionJavadocTest.groovy) for example.
 
 ### Use from Gradle
 
@@ -90,22 +91,20 @@ plugins {
 ...
 
 dependencies {
-  xjcClasspath 'info.hubbitus:xjc-documentation-annotation-plugin:1.0'
+  xjcClasspath 'info.dbaluxa:xjc-documentation-javadoc-plugin:1.0'
 }
 
 // Results by default in `build/xjc/generated-sources`
 xjcGenerate {
   source = fileTree('src/main/resources') { include '*.xsd' }
   packageLevelAnnotations = false
-  targetPackage = 'info.hubbitus.xjc.plugin.example'
-  extraArgs = [ '-XPluginDescriptionAnnotation' ]
+  targetPackage = 'info.dbaluxa.xjc.plugin.example'
+  extraArgs = [ '-XPluginDescriptionJavadoc' ]
 }
 ```
 Just run:
 
     ./gradlew xjcGenerate
-
-Please look complete example in [example-project-gradle](example-project-gradle) directory - it have fully independent gradle project ot demonstrate how to use this plugin..
 
 ## Development:
 
@@ -116,21 +115,5 @@ Build:
 Run tests:
 
     ./gradlew test
-
-## Rationale (why it is born)
-For our integration we have task load big amount of `XSD` files into `MDM` software (proprietary [Unidata](https://unidata-platform.com/)).
-
-`XJC` is good tool for generate Java `DTO` classes from `XSD` specification. It was first part ow way.
-Then I got excellent [reflections](https://github.com/ronmamo/reflections) library and travers generated classes.
-
-Problem was I was not be able name my model items with original annotations! Despite `XJC` place initial Javadoc which contains description and related part of `XML` element it have several problems:
-
-1. That only for class, and absent fo fields.
-2. Even for class I can't use javadoc in runtime
-
-First approach to parse `XSD` for documentation on groovy works, but was very fragile and always require get updates and hacks.
-
-I long time search way to bring such annotations into `DTO` classes itself to do not do work twice (generate classes and again parse `XSD` files manually).
-I did not found solution. And it is the reason born of that plugin.
 
 ## Licensed under MIT
