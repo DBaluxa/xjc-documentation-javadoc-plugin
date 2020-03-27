@@ -1,9 +1,10 @@
-[![Autobuild Status](https://travis-ci.org/Hubbitus/xjc-documentation-annotation-plugin.svg?branch=master)](https://travis-ci.org/Hubbitus/xjc-documentation-annotation-plugin)
+[![Autobuild Status](https://travis-ci.org/Hubbitus/xjc-documentation-annotation-plugin.svg?branch=master)](https://travis-ci.org/DBaluxa/xjc-documentation-javadoc-plugin)
 
 XJC plugin to bring XSD descriptions into JavaDoc of generated classes
 ==========================================================================
 
-Why that plugin born you may find at the end of readme, but now lets look what it does and how to use it!
+Plugin forked from Hubbitus/xjc-documentation-annotation-plugin, because we does not need annonations, only Javadoc in our Java files.
+Although adding special tags into the XSD could be another way, to have the XSD documentation as Javadoc in the Java files, it requires XSD files to be changed, which wasn't an option for us.
 
 ## What it does: \<annotation>\<documentation> -> Java class JavaDoc
 
@@ -59,7 +60,7 @@ public class Customer {
 ## How to use
 
 ### Manual call in commandline
-If you want run it manually ensure jar class with plugin in run classpath and just add option `-XPluginDescriptionAnnotation`. F.e.:
+If you want run it manually ensure jar class with plugin in run classpath and just add option `-XPluginDescriptionJavadoc`. F.e.:
 
     xjc -npa -no-header -d src/main/generated-java/ -p xsd.generated -XPluginDescriptionJavadoc scheme.xsd
 
