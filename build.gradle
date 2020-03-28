@@ -7,8 +7,8 @@ plugins {
 	id 'signing'
 }
 
-group 'info.dbaluxa'
-version '1.2'
+group 'io.github.dbaluxa'
+version '1.3'
 
 sourceCompatibility = 1.8
 

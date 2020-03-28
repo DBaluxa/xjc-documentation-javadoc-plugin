@@ -1,4 +1,4 @@
-package info.dbaluxa
+package io.github.dbaluxa
 
 import com.sun.tools.xjc.Driver
 import com.sun.tools.xjc.XJCListener

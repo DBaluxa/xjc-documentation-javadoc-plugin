@@ -1,4 +1,4 @@
-package info.dbaluxa;
+package io.github.dbaluxa;
 
 import com.sun.codemodel.JFieldVar;
 import com.sun.tools.xjc.Options;
