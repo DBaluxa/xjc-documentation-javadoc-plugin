@@ -1,6 +1,5 @@
 [![Autobuild Status](https://travis-ci.org/DBaluxa/xjc-documentation-javadoc-plugin.svg?branch=master)](https://travis-ci.org/DBaluxa/xjc-documentation-javadoc-plugin)
 
-a
 
 XJC plugin to bring XSD descriptions into JavaDoc of generated classes
 ==========================================================================
